@@ -11,7 +11,7 @@ this app is for my own practice for html, css and ClojureScript.
 
 ### usage
 
-1. use cljsc to compile cljs file into js file. (more infos about cljsc and ClojureScript [here](http://https://github.com/clojure/clojurescript/))
+1. use cljsc to compile cljs file into js file. (more infos about cljsc and ClojureScript [here](https://github.com/clojure/clojurescript/))
 
     cljsc todo.cljs '{:optimizations :simple :pretty-print true}' > todo.js
 
