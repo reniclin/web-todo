@@ -6,7 +6,8 @@
 @import "compass/css3/images";
 @import "compass/css3/border-radius";
 
-$button-color: #3bd1f2;
+$button-color: #36a1ff;
+$focus-color: #3bd1f2;
 
 body {
     font-family: arial, sans-serif;
@@ -36,7 +37,7 @@ ul#todolist {
 
 #addButton {
     @include fancy-button-structure(13px, 0.4em, 2px);
-    @include fancy-button-colors($button-color, adjust-hue($button-color, -90), darken(adjust-hue($button-color, -90), 6));
+    @include fancy-button-colors($button-color, adjust-hue($button-color, -10), darken(adjust-hue($button-color, -15), 6));
 }
 
 #todoInput {
@@ -45,5 +46,5 @@ ul#todolist {
     width: 80%;
     margin: 10px;
     border: 2px solid darken($button-color, 6);
-    @include border-radius(3px);
+    @include border-radius(12px);
 }

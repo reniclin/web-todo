@@ -45,7 +45,8 @@
 (defn ^:export on-add-click []
   (.log js/console "on-add-click")
   (let [todo-text (-> (.getElementById js/document "todoInput") (.-value))]
-    (if (not= todo-text "") (add-new-todo todo-text) (js/alert "Please input a todo."))))
+    (if (not= todo-text "") (add-new-todo todo-text) (js/alert "Please input a todo.")))
+  (set! (-> (.getElementById js/document "todoInput") (.-value)) ""))
 
 
 ;; ========== delete ==========
@@ -62,7 +63,7 @@
 
 (defn ^:export on-delete-click [button]
   (.log js/console "on-delete-click")
-  (remove-saved (.. button -parentNode -innerText))
+  (remove-saved (.. button -parentNode -textContent))
   (delete-li button))
 
 
@@ -96,8 +97,6 @@
 
 
 ;; ========== init ==========
-
-
 (defn load-todo-list []
   (.log js/console "load-todo-list")
   (let [saved-items (get-saved-items todo-storage-key)]
@@ -110,4 +109,4 @@
   (.focus (.getElementById js/document "todoInput"))
   (load-todo-list))
 
-;; (set! (.-onload js/window) init)
+(set! (.-onload js/window) init)

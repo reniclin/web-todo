@@ -7,10 +7,10 @@
     <script src=js/todo.js></script>
     <title>The Todo List.</title>
   </head>
-  <body  onload="renic.todo.init()">
+  <body>
     <form>
       <input type="text" id="todoInput" onkeydown="if (event.keyCode==13) {renic.todo.on_add_click();}" placeholder="do something..."/>
-      <input type="button" id="addButton" onclick="renic.todo.on_add_click()" value="Add new todo"/>
+      <input type="button" id="addButton" onclick="renic.todo.on_add_click()" value="+"/>
     </form>
     <ul id="todolist">
     </ul>
