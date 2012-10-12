@@ -30,6 +30,6 @@ this app is for my own practice for html, css and ClojureScript.
 
 ### note
 
-currently not work right with FireFox and IE. (maybe I'll fix it someday. lol)
+currently not work right with IE. (maybe I'll fix it someday. lol)
 
-work fine with Chrome, Opera and Safari.
+work fine with Chrome, FireFox, Opera and Safari.
