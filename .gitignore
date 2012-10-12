@@ -1,2 +1,8 @@
 out/
+classes/
+lib/
+.lein-plugins/
+.sass-cache/
+.lein-deps-sum
 *.js
+*.css

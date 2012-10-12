@@ -1,0 +1,49 @@
+/* todoList.scss */
+
+@import "compass";
+@import "compass/reset";
+@import "fancy-buttons";
+@import "compass/css3/images";
+@import "compass/css3/border-radius";
+
+$button-color: #3bd1f2;
+
+body {
+    font-family: arial, sans-serif;
+}
+
+ul#todolist {
+    @include border-radius(5px);
+    margin-top: 10px;
+    padding: 0px;
+    list-style-type: none;
+    li {
+        border-bottom: 1px solid #a9a9a9;
+        padding: 10px;
+        @include background-image(linear-gradient(#f9f9f9, #e3e3e3));
+        &:last-child {
+            border-bottom: none;
+            @include border-bottom-radius(5px);
+        }
+        &:first-child {
+            @include border-top-radius(5px);
+        }
+        &.done {
+            text-decoration: line-through;
+        }
+    }
+}
+
+#addButton {
+    @include fancy-button-structure(13px, 0.4em, 2px);
+    @include fancy-button-colors($button-color, adjust-hue($button-color, -90), darken(adjust-hue($button-color, -90), 6));
+}
+
+#todoInput {
+    font-size: 13px;
+    height: 23px;
+    width: 80%;
+    margin: 10px;
+    border: 2px solid darken($button-color, 6);
+    @include border-radius(3px);
+}

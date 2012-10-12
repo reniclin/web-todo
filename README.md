@@ -11,11 +11,21 @@ this app is for my own practice for html, css and ClojureScript.
 
 ### usage
 
-1. use cljsc to compile cljs file into js file. (more infos about cljsc and ClojureScript [here](https://github.com/clojure/clojurescript/))
+1. compile cljs to js (more infos about cljsc and ClojureScript [here](https://github.com/clojure/clojurescript/))
 
-    cljsc todo.cljs '{:optimizations :simple :pretty-print true}' > todo.js
+    use cljsc to compile cljs file into js file.
 
-2. use browser to open the todo.html file, and try it.
+   ```$ cljsc todo.cljs '{:optimizations :simple :pretty-print true}' > todo.js```
+   
+    or use leiningen cljsbuild command
+
+    ```$ lein cljsbuild auto```
+
+2. compile scss to css
+
+    ```$ compass watch```
+
+3. use browser to open the todo.html file, and try it.
 
 
 ### note

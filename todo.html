@@ -2,11 +2,12 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <link rel="stylesheet" href="todo.css">
-    <script src=todo.js></script>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="css/todo.css">
+    <script src=js/todo.js></script>
     <title>The Todo List.</title>
   </head>
-  <body onload="renic.todo.init()">
+  <body  onload="renic.todo.init()">
     <form>
       <input type="text" id="todoInput" onkeydown="if (event.keyCode==13) {renic.todo.on_add_click();}" placeholder="do something..."/>
       <input type="button" id="addButton" onclick="renic.todo.on_add_click()" value="Add new todo"/>
