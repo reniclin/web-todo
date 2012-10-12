@@ -16,8 +16,8 @@ this app is for my own practice for html, css and ClojureScript.
     use cljsc to compile cljs file into js file.
 
    ```$ cljsc todo.cljs '{:optimizations :simple :pretty-print true}' > todo.js```
-   
-    or use leiningen cljsbuild command
+
+    or use [lein-cljsbuild](https://github.com/emezeske/lein-cljsbuild) command 
 
     ```$ lein cljsbuild auto```
 
