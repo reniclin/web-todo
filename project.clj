@@ -14,5 +14,6 @@
                 :compiler {;; :output-dir "resources/public/cljs/main",  ;; for debug mode
                            :output-to "js/todo.js",
                            :optimizations :simple,
+                           ;; :optimizations :advanced,
                            :pretty-print true}}]}
   :main ^{:skip-aot true} web-todo.server)

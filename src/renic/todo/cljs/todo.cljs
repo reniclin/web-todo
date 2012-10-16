@@ -1,11 +1,21 @@
 (ns renic.todo
-  (:require [crate.core :as crate]
-            [goog.array :as goog-array])
+  (:require [goog.array :as goog-array]
+            [crate.core :as crate])
   (:use-macros [crate.macros :only [defpartial]]))
 
 
 (def todo-storage-key "todolist")
 (def storage (.-localStorage js/window))
+
+;; ========== htmls ==========
+(defpartial icon-delete []
+  [:div.icon-delete
+   [:div.icon-delete-line-1]
+   [:div.icon-delete-line-2]])
+
+(defpartial icon-delete-2 []
+  [:div.icon-delete
+   [:div.icon-delete-content "X"]])
 
 
 ;; ========== test ==========
@@ -26,7 +36,8 @@
 (defn add-li [todo-text]
   (.log js/console "add-li")
   (let [li (.createElement js/document "li")
-        ul (.getElementById js/document "todolist")]
+        ul (.getElementById js/document "todo-list")]
+    (.setAttribute li "class" "item-ongoing")
     (.setAttribute li "onclick" "renic.todo.on_list_click(this)")
     (set! (.-innerHTML li) todo-text)
     (.appendChild ul li)))
@@ -44,9 +55,9 @@
 
 (defn ^:export on-add-click []
   (.log js/console "on-add-click")
-  (let [todo-text (-> (.getElementById js/document "todoInput") (.-value))]
+  (let [todo-text (-> (.getElementById js/document "todo-input") (.-value))]
     (if (not= todo-text "") (add-new-todo todo-text) (js/alert "Please input a todo.")))
-  (set! (-> (.getElementById js/document "todoInput") (.-value)) ""))
+  (set! (-> (.getElementById js/document "todo-input") (.-value)) ""))
 
 
 ;; ========== delete ==========
@@ -57,7 +68,7 @@
 (defn remove-saved [todo-text]
   (.log js/console "remove")
   (let [saved-items (get-saved-items todo-storage-key)
-        text-index (goog-array/indexOf saved-items todo-text)] ;; this function does NOT work on Firefox
+        text-index (goog-array/indexOf saved-items todo-text)]
     (.splice saved-items text-index 1)
     (.setItem storage todo-storage-key (.stringify js/JSON saved-items))))
 
@@ -70,24 +81,21 @@
 ;; ========== Click list ==========
 (defn mark-done [li]
   (.log js/console "mark-done")
-  (let [button-delete (.createElement js/document "input")]
-    (set! (.-type button-delete) "button")
-    (set! (.-value button-delete) "X")
-    (.setAttribute button-delete "class" "delete")
-    (.setAttribute button-delete "onclick" "renic.todo.on_delete_click(this)")
-    (.appendChild li button-delete))
-  (.setAttribute li "class" "done"))
+  (let [icon (icon-delete)]
+    (.setAttribute icon "onclick" "renic.todo.on_delete_click(this)")
+    (.appendChild li icon))
+  (.setAttribute li "class" "item-done"))
 
 (defn mark-ongoing [li]
   (.log js/console "mark-ongoing")
-  (let [button-delete (.getElementsByClassName li "delete")]
-    (.removeChild li (.item button-delete 0)))
-  (.setAttribute li "class" "ongoing"))
+  (let [icon-delete (.getElementsByClassName li "icon-delete")]
+    (.removeChild li (.item icon-delete 0)))
+  (.setAttribute li "class" "item-ongoing"))
 
 (defn toggle-done [li]
   (.log js/console "toggle-done")
   (let [li-class (.getAttribute li "class")]
-    (if (not= li-class "done")
+    (if (not= li-class "item-done")
       (mark-done li)
       (mark-ongoing li))))
 
@@ -106,7 +114,7 @@
 
 (defn ^:export init []
   (.log js/console "init")
-  (.focus (.getElementById js/document "todoInput"))
+  (.focus (.getElementById js/document "todo-input"))
   (load-todo-list))
 
 (set! (.-onload js/window) init)
