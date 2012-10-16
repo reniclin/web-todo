@@ -21,7 +21,7 @@ this app is for my own practice for html, css and ClojureScript.
 
     ```$ lein cljsbuild auto```
 
-2. compile scss to css
+2. compile scss to css (you should know about [sass](http://sass-lang.com/) and [compass](http://compass-style.org/) first.)
 
     ```$ compass watch```
 
