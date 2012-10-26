@@ -67,6 +67,13 @@ body {
     @include border-radius(12px);
 }
 
+li.category {
+    font-size: 23px;
+    height: 32px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: darken($button-color, 10);
+}
 li.item-ongoing {
     border-bottom: 1px solid $list-line-color;
     padding: 10px;
@@ -78,13 +85,6 @@ li.item-ongoing {
 li.item-done {
     @extend .item-ongoing;
     text-decoration: line-through;
-}
-li.category {
-    font-size: 23px;
-    height: 32px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    color: darken($button-color, 10);
 }
 ul#todo-list {
     margin-top: 10px;

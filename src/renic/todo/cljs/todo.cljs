@@ -3,6 +3,10 @@
             [crate.core :as crate])
   (:use-macros [crate.macros :only [defpartial defhtml]]))
 
+;; for FireFox and opera hack
+(extend-type js/DOMStringList
+  ISeqable
+  (-seq [array] (array-seq array 0)))
 
 (def todo-storage-key "todo-list")
 (def todo-tomorrow-key "todo-tomorrow")
@@ -138,6 +142,8 @@
   (.stopPropagation ev)
   (if (> (.. ev -dataTransfer -types -length) 0)
     (doseq [type (.. ev -dataTransfer -types)]
+      (.log js/console (str "types: " (.. ev -dataTransfer -types)))
+      (.log js/console (str "type: " type))
       (if (= type "text/plain")
         (let [source-id (.getData (.-dataTransfer ev) "text/plain")
               source (.getElementById js/document source-id)
@@ -147,7 +153,8 @@
               target-id (.-id target)]
           (.appendChild target (.removeChild source-perent source))
           (save target-id source-id)
-          (remove-saved source-perent-id source-id))))
+          (remove-saved source-perent-id source-id))
+        ))
     false))
 
 (defn add-ul-listeners [ul]
