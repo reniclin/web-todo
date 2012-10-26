@@ -12,7 +12,7 @@
       <input type="text" id="todo-input" onkeydown="if (event.keyCode==13) {renic.todo.on_add_click();}" placeholder="Do something..."/>
       <input type="button" id="button-add" onclick="renic.todo.on_add_click()" value="+"/>
     </form>
-    <ul id="todo-list">
-    </ul>
+    <ul id="todo-list" ><li class="category">Today</li></ul>
+    <ul id="todo-tomorrow" ><li class="category">Tomorrow</li></ul>
   </body>
 </html>

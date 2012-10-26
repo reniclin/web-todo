@@ -1,14 +1,15 @@
 (ns renic.todo
   (:require [goog.array :as goog-array]
             [crate.core :as crate])
-  (:use-macros [crate.macros :only [defpartial]]))
+  (:use-macros [crate.macros :only [defpartial defhtml]]))
 
 
-(def todo-storage-key "todolist")
+(def todo-storage-key "todo-list")
+(def todo-tomorrow-key "todo-tomorrow")
 (def storage (.-localStorage js/window))
 
 ;; ========== htmls ==========
-(defpartial icon-delete []
+(defhtml icon-delete []
   [:div.icon-delete
    [:div.icon-delete-line-1]
    [:div.icon-delete-line-2]])
@@ -32,57 +33,35 @@
       (.parse js/JSON storage-item))))
 
 
-;; ========== add ==========
-(defn add-li [todo-text]
-  (.log js/console "add-li")
-  (let [li (.createElement js/document "li")
-        ul (.getElementById js/document "todo-list")]
-    (.setAttribute li "class" "item-ongoing")
-    (.setAttribute li "onclick" "renic.todo.on_list_click(this)")
-    (set! (.-innerHTML li) todo-text)
-    (.appendChild ul li)))
-
-(defn save [todo-text]
-  (.log js/console "save")
-  (let [saved-items (get-saved-items todo-storage-key)]
-    (.push saved-items todo-text)
-    (.setItem storage todo-storage-key (.stringify js/JSON saved-items))))
-
-(defn add-new-todo [todo-text]
-  (.log js/console "add-new-todo")
-  (add-li todo-text)
-  (save todo-text))
-
-(defn ^:export on-add-click []
-  (.log js/console "on-add-click")
-  (let [todo-text (-> (.getElementById js/document "todo-input") (.-value))]
-    (if (not= todo-text "") (add-new-todo todo-text) (js/alert "Please input a todo.")))
-  (set! (-> (.getElementById js/document "todo-input") (.-value)) ""))
-
-
 ;; ========== delete ==========
 (defn delete-li [button]
   (.log js/console "delete-li")
   (.removeChild (.. button -parentNode -parentNode) (.-parentNode button)))
 
-(defn remove-saved [todo-text]
+(defn remove-saved [key todo-text]
   (.log js/console "remove")
-  (let [saved-items (get-saved-items todo-storage-key)
+  (.log js/console (str "key: " key))
+  (.log js/console (str "todo-text: " todo-text))
+  (let [saved-items (get-saved-items key)
         text-index (goog-array/indexOf saved-items todo-text)]
     (.splice saved-items text-index 1)
-    (.setItem storage todo-storage-key (.stringify js/JSON saved-items))))
+    (.setItem storage key (.stringify js/JSON saved-items))))
 
-(defn ^:export on-delete-click [button]
+(defn on-delete-click [ev]
   (.log js/console "on-delete-click")
-  (remove-saved (.. button -parentNode -textContent))
-  (delete-li button))
+  (this-as button
+           (remove-saved
+            (.. ev -currentTarget -parentNode -parentNode -id)
+            (.. button -parentNode -textContent))
+           (delete-li button)))
 
 
 ;; ========== Click list ==========
 (defn mark-done [li]
   (.log js/console "mark-done")
   (let [icon (icon-delete)]
-    (.setAttribute icon "onclick" "renic.todo.on_delete_click(this)")
+    ;; (.addEventListener icon "click" on-delete-click false)
+    (set! (.-onclick icon) on-delete-click)
     (.appendChild li icon))
   (.setAttribute li "class" "item-done"))
 
@@ -99,22 +78,102 @@
       (mark-done li)
       (mark-ongoing li))))
 
-(defn ^:export on-list-click [li]
+(defn on-list-click []
   (.log js/console "on-list-click")
-  (toggle-done li))
+  (this-as li (toggle-done li)))
+
+
+;; ========== add ==========
+(defn li-on-dragstart [ev]
+  (.log js/console "li-on-dragstart")
+  (set! (.. ev -dataTransfer -effectAllowed) (array "copy" "move"))
+  (.setData (.-dataTransfer ev) "text/plain" (.. ev -target -id)))
+
+(defn add-li [key todo-text]
+  (.log js/console "add-li")
+  (let [li (.createElement js/document "li")
+        ul (.getElementById js/document key)]
+    (.setAttribute li "class" "item-ongoing")
+    (.setAttribute li "id" todo-text)
+    ;; (.addEventListener li "click" on-list-click false)
+    (set! (.-draggable li) true)
+    (set! (.-onclick li) on-list-click)
+    (set! (.-innerHTML li) todo-text)
+    (.addEventListener li "dragstart" li-on-dragstart false)
+    (.appendChild ul li)))
+
+(defn save [key todo-text]
+  (.log js/console "save")
+  (.log js/console (str "key: " key))
+  (.log js/console (str "todo-text: " todo-text))
+  (let [saved-items (get-saved-items key)]
+    (.push saved-items todo-text)
+    (.setItem storage key (.stringify js/JSON saved-items))))
+
+(defn add-new-todo [todo-text]
+  (.log js/console "add-new-todo")
+  (add-li todo-storage-key todo-text)
+  (save todo-storage-key todo-text))
+
+(defn ^:export on-add-click []
+  (.log js/console "on-add-click")
+  (let [todo-text (-> (.getElementById js/document "todo-input") (.-value))]
+    (if (not= todo-text "") (add-new-todo todo-text) (js/alert "Please input a todo.")))
+  (set! (-> (.getElementById js/document "todo-input") (.-value)) ""))
 
 
 ;; ========== init ==========
-(defn load-todo-list []
+(defn ul-on-dragenter [ev]
+  (.log js/console "ul-on-dragenter")
+  (.preventDefault ev))
+
+(defn ul-on-dragover [ev]
+  (.log js/console "ul-on-dragover")
+  (.preventDefault ev)
+  (set! (.. ev -dataTransfer -dropEffect) "copy"))
+
+(defn ul-on-drop [ev]
+  (.log js/console "ul-on-drop")
+  (.preventDefault ev)
+  (.stopPropagation ev)
+  (if (> (.. ev -dataTransfer -types -length) 0)
+    (doseq [type (.. ev -dataTransfer -types)]
+      (if (= type "text/plain")
+        (let [source-id (.getData (.-dataTransfer ev) "text/plain")
+              source (.getElementById js/document source-id)
+              source-perent (.-parentNode source)
+              source-perent-id (.-id source-perent)
+              target (.-currentTarget ev)
+              target-id (.-id target)]
+          (.appendChild target (.removeChild source-perent source))
+          (save target-id source-id)
+          (remove-saved source-perent-id source-id))))
+    false))
+
+(defn add-ul-listeners [ul]
+  (.log js/console "add-ul-listeners")
+  (doto ul
+    (.addEventListener "dragenter" ul-on-dragenter false)
+    (.addEventListener "dragover" ul-on-dragover false)
+    (.addEventListener "drop" ul-on-drop false)))
+
+(defn init-uls []
+  (add-ul-listeners (.getElementById js/document "todo-list"))
+  (add-ul-listeners (.getElementById js/document "todo-tomorrow")))
+
+(defn load-todo-list [key]
   (.log js/console "load-todo-list")
-  (let [saved-items (get-saved-items todo-storage-key)]
+  (.log js/console (str "key: " key))
+  (let [saved-items (get-saved-items key)]
     (if (not= nil saved-items)
       (doseq [item saved-items]
-        (add-li item)))))
+        (add-li key item)))))
 
 (defn ^:export init []
   (.log js/console "init")
   (.focus (.getElementById js/document "todo-input"))
-  (load-todo-list))
+  (init-uls)
+  (load-todo-list todo-storage-key)
+  (load-todo-list todo-tomorrow-key))
 
 (set! (.-onload js/window) init)
