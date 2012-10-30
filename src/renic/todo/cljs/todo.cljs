@@ -121,18 +121,19 @@
 
 (defn ^:export on-add-click []
   (.log js/console "on-add-click")
-  (let [todo-text (-> (.getElementById js/document "todo-input") (.-value))]
-    (if (not= todo-text "") (add-new-todo todo-text) (js/alert "Please input a todo.")))
-  (set! (-> (.getElementById js/document "todo-input") (.-value)) ""))
+  (let [todo (.getElementById js/document "todo-input")
+        todo-text (.-value todo)]
+    (if (not= todo-text "") (add-new-todo todo-text) (js/alert "Please input a todo."))
+    (set! (.-value todo) "")
+    (.focus todo))
+  false)
 
 
-;; ========== init ==========
+;; ========== drag and drop ==========
 (defn ul-on-dragenter [ev]
-  (.log js/console "ul-on-dragenter")
   (.preventDefault ev))
 
 (defn ul-on-dragover [ev]
-  (.log js/console "ul-on-dragover")
   (.preventDefault ev)
   (set! (.. ev -dataTransfer -dropEffect) "copy"))
 
@@ -153,8 +154,7 @@
               target-id (.-id target)]
           (.appendChild target (.removeChild source-perent source))
           (save target-id source-id)
-          (remove-saved source-perent-id source-id))
-        ))
+          (remove-saved source-perent-id source-id))))
     false))
 
 (defn add-ul-listeners [ul]
@@ -163,6 +163,24 @@
     (.addEventListener "dragenter" ul-on-dragenter false)
     (.addEventListener "dragover" ul-on-dragover false)
     (.addEventListener "drop" ul-on-drop false)))
+
+
+;; ========== init ==========
+(defn input-submit [ev]
+  (.preventDefault ev)
+  (on-add-click)
+  false)
+
+(defn input-key-down [ev]
+  (.log js/console (str "keyCode: " (.-keyCode ev)))
+  (if (=  13 (.-keyCode ev)) (input-submit ev) false))
+
+(defn init-input []
+  (let [input (.getElementById js/document "todo-input")]
+    (doto input
+      (.addEventListener "keydown" input-key-down false)
+      ;; (.addEventListener "submit" input-submit false)
+      (.focus))))
 
 (defn init-uls []
   (add-ul-listeners (.getElementById js/document "todo-list"))
@@ -178,7 +196,7 @@
 
 (defn ^:export init []
   (.log js/console "init")
-  (.focus (.getElementById js/document "todo-input"))
+  (init-input)
   (init-uls)
   (load-todo-list todo-storage-key)
   (load-todo-list todo-tomorrow-key))
