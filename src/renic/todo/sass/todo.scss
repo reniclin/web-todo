@@ -11,9 +11,17 @@
 $button-color: #36a1ff;
 $focus-color: #3bd1f2;
 $list-line-color: #c2c2c2;
+$white-color: #fff;
+$dark-grey: #999;
 
-body {
+body.light {
     font-family: arial, sans-serif;
+}
+
+body.dark {
+    font-family: arial, sans-serif;
+    color: #ccc;
+    background-color: #000;
 }
 
 #button-add {
@@ -21,16 +29,28 @@ body {
     @include fancy-button-colors($button-color, adjust-hue($button-color, -10), adjust-hue($button-color, -20));
 }
 
+.through-line {
+    background-color: lighten($list-line-color, 5);
+    height: 1px;
+    width: 97%;
+    position: relative;
+    top: -9px;
+//    bottom: 9px;
+    @include animate(fadeInLeft, 0.5s, 0.1s);
+}
+
 .icon-delete {
+    background-color: $dark-grey;
     float:right;
-    background-color: #999;
+    position: relative;
+    bottom: 16px;
     width: 16px;
     height: 16px;
     @include border-radius(8px);
 }
 
 .icon-delete-line-1 {
-    background-color: #fff;
+    background-color: $white-color;
     width: 8px;
     height: 2px;
     position: relative;
@@ -41,7 +61,7 @@ body {
 }
 
 .icon-delete-line-2 {
-    background-color: #fff;
+    background-color: $white-color;
     width: 2px;
     height: 8px;
     position: relative;
@@ -73,15 +93,20 @@ li {
 /* @include animate(fadeOutDown, 0.2s, 0.2s); */
 }
 li.category {
-    font-size: 23px;
-    height: 32px;
+    font-size: 26px;
+    height: 36px;
     margin-top: 10px;
     margin-bottom: 10px;
     color: darken($button-color, 10);
+//    color: lighten($button-color, 5);
 }
 li.item-ongoing {
-    border-bottom: 1px solid $list-line-color;
-    padding: 10px;
+    border-bottom: 1px solid darken($list-line-color, 5);
+    font-size: 18px;
+    height: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+//    padding: 10px;
     &:last-child {
     }
     &:first-child {
@@ -90,7 +115,7 @@ li.item-ongoing {
 }
 li.item-done {
     @extend .item-ongoing;
-    text-decoration: line-through;
+//    text-decoration: line-through;
 }
 ul {
     margin-top: 10px;

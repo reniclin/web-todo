@@ -8,8 +8,8 @@
   ISeqable
   (-seq [array] (array-seq array 0)))
 
-(def todo-storage-key "todo-list")
-(def todo-tomorrow-key "todo-tomorrow")
+(def todo-personal-key "todo-personal")
+(def todo-work-key "todo-work")
 (def storage (.-localStorage js/window))
 
 ;; ========== htmls ==========
@@ -17,6 +17,9 @@
   [:div.icon-delete
    [:div.icon-delete-line-1]
    [:div.icon-delete-line-2]])
+
+(defhtml through-line []
+  [:div.through-line])
 
 (defpartial icon-delete-2 []
   [:div.icon-delete
@@ -63,15 +66,19 @@
 ;; ========== Click list ==========
 (defn mark-done [li]
   (.log js/console "mark-done")
-  (let [icon (icon-delete)]
+  (let [icon (icon-delete)
+        line (through-line)]
     ;; (.addEventListener icon "click" on-delete-click false)
     (set! (.-onclick icon) on-delete-click)
+    (.appendChild li line)
     (.appendChild li icon))
   (.setAttribute li "class" "item-done"))
 
 (defn mark-ongoing [li]
   (.log js/console "mark-ongoing")
-  (let [icon-delete (.getElementsByClassName li "icon-delete")]
+  (let [icon-delete (.getElementsByClassName li "icon-delete")
+        line (.getElementsByClassName li "through-line")]
+    (.removeChild li (.item line 0))
     (.removeChild li (.item icon-delete 0)))
   (.setAttribute li "class" "item-ongoing"))
 
@@ -116,8 +123,8 @@
 
 (defn add-new-todo [todo-text]
   (.log js/console "add-new-todo")
-  (add-li todo-storage-key todo-text)
-  (save todo-storage-key todo-text))
+  (add-li todo-personal-key todo-text)
+  (save todo-personal-key todo-text))
 
 (defn ^:export on-add-click []
   (.log js/console "on-add-click")
@@ -183,8 +190,8 @@
       (.focus))))
 
 (defn init-uls []
-  (add-ul-listeners (.getElementById js/document "todo-list"))
-  (add-ul-listeners (.getElementById js/document "todo-tomorrow")))
+  (add-ul-listeners (.getElementById js/document "todo-personal"))
+  (add-ul-listeners (.getElementById js/document "todo-work")))
 
 (defn load-todo-list [key]
   (.log js/console "load-todo-list")
@@ -198,7 +205,9 @@
   (.log js/console "init")
   (init-input)
   (init-uls)
-  (load-todo-list todo-storage-key)
-  (load-todo-list todo-tomorrow-key))
+  (load-todo-list todo-personal-key)
+  (load-todo-list todo-work-key))
+
+;; (crate-page/include-css "/css/todo.css")
 
 (set! (.-onload js/window) init)

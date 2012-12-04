@@ -7,12 +7,12 @@
     <script src=js/todo.js></script>
     <title>The Todo List.</title>
   </head>
-  <body>
+  <body class="light">
     <form>
       <input type="text" id="todo-input" placeholder="Do something..."/>
       <input type="button" id="button-add" onclick="renic.todo.on_add_click()" value="+"/>
     </form>
-    <ul id="todo-list" ><li class="category">Today</li></ul>
-    <ul id="todo-tomorrow" ><li class="category">Tomorrow</li></ul>
+    <ul id="todo-personal" ><li class="category">Personal</li></ul>
+    <ul id="todo-work" ><li class="category">Work</li></ul>
   </body>
 </html>
