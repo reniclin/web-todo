@@ -27,6 +27,11 @@ this app is for my own practice for html, css and ClojureScript.
 
 3. use browser to open the todo.html file, and try it.
 
+### samples
+
+If you know nothing about ClojureScript and sass/scss/compass, you can just use your browser open samples/todo.html
+
+it included all needed js and css code, no need to complie, just try.
 
 ### note
 
