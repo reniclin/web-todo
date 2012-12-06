@@ -9,10 +9,12 @@
   </head>
   <body class="light">
     <form>
+      <div id="dark" onclick="renic.todo.on_toggle_theme(this)"></div>
+      <div id="light" onclick="renic.todo.on_toggle_theme(this)"></div>
       <input type="text" id="todo-input" placeholder="Do something..."/>
       <input type="button" id="button-add" onclick="renic.todo.on_add_click()" value="+"/>
     </form>
-    <ul id="todo-personal" ><li class="category">Personal</li></ul>
-    <ul id="todo-work" ><li class="category">Work</li></ul>
+    <ul id="todo-today" ><li class="category">Today</li></ul>
+    <ul id="todo-later" ><li class="category">Later</li></ul>
   </body>
 </html>
