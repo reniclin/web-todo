@@ -42,9 +42,15 @@ currently not work right with IE. (maybe I'll fix it someday. lol)
 work fine with Chrome, FireFox, Opera and Safari.
 
 ### resources
-[Clojure](http://clojure.org/)
-[ClojureScript](https://github.com/clojure/clojurescript)
-[sass](http://sass-lang.com/)
-[Compass](http://compass-style.org/)
-[fancy-buttons](https://github.com/imathis/fancy-buttons)
+[Clojure](http://clojure.org/) 
+
+[ClojureScript](https://github.com/clojure/clojurescript) 
+
+[sass](http://sass-lang.com/) 
+
+[Compass](http://compass-style.org/) 
+
+[fancy-buttons](https://github.com/imathis/fancy-buttons) 
+
 [Animate Mixin for Compass/SASS](http://thecssguru.freeiz.com/animate/)
+
